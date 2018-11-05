@@ -61,7 +61,7 @@ int QtServer::InitSocket()
 	int err;
 	//声明调用1.1版本的winsock。MAKEWORD(2,2)是2.2版本
 	wVersionRequested = MAKEWORD(1, 1);
-	//
+	//启动WSA，之前client没执行这个就一直报错
 	err = WSAStartup(wVersionRequested, &wsaData);
 	if (err != 0)
 	{
@@ -79,7 +79,7 @@ int QtServer::InitSocket()
 	m_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (m_socket == INVALID_SOCKET)
 	{
-		//QMessageBox::about(this,"warning","socket Create Failed！");
+		QMessageBox::about(this,"warning","socket Create Failed！");
 		return FALSE;
 	}
 
@@ -92,7 +92,6 @@ int QtServer::InitSocket()
 	if (err == SOCKET_ERROR)
 	{
 		closesocket(m_socket);
-		//AfxMessageBox(_T("绑定失败！"));
 		return FALSE;
 	}
 	listen(m_socket, 5);//开启监听
@@ -110,7 +109,12 @@ void QtServer::SocketAccept()
 	{
 		SOCKET sockConn = accept(m_socket, (SOCKADDR*)&addrClient, &len);
 
-
+		if (sockConn == INVALID_SOCKET) {
+			wprintf(L"accept failed with error: %ld\n", WSAGetLastError());
+			closesocket(m_socket);
+			WSACleanup();
+			return ;
+		}
 		//多客户端的方法就每接收到一个accept就在开启一个线程
 		//参数赋值
 		SocketParam param;
@@ -189,6 +193,7 @@ void QtServer::CloseSocket()
 {
 	this->closeFlag = true;
 	closesocket(this->m_socket);
+	WSACleanup();
 	ui.ConnectTxt->setText("closed...");
 	closeFlag = false;
 }

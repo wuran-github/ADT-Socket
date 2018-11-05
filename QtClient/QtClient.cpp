@@ -58,16 +58,6 @@ void QtClient::SocketAccept(DWORD ip,int port)
 
 	unsigned long long file_size = 0;
 
-	//加载套接字库
-	WORD wVersionRequested;
-	//这个结构被用来存储被WSAStartup函数调用后返回的Windows Sockets数据。它包含Winsock.dll执行的数据。
-	WSADATA wsaData;
-	int err;
-	//声明调用1.1版本的winsock。MAKEWORD(2,2)是2.2版本
-	wVersionRequested = MAKEWORD(1, 1);
-	//
-	err = WSAStartup(wVersionRequested, &wsaData);
-
 
 	SOCKET sockClient = socket(AF_INET, SOCK_STREAM, 0);
 	SOCKADDR_IN addrSrv;
@@ -79,9 +69,7 @@ void QtClient::SocketAccept(DWORD ip,int port)
 
 	if (!::connect(sockClient, (SOCKADDR*)&addrSrv, sizeof(SOCKADDR)))
 	{
-		//GetDlgItem(IDC_SHOWINFO)->SetWindowText(_T(""));
-		//GetDlgItem(IDC_SHOWINFO)->SetWindowText(_T("连接服务器成功！\r\n"));
-
+		
 		QString path=ui.FileText->text();
 		QDir dir(path);
 		if (!dir.exists()) {
@@ -105,9 +93,7 @@ void QtClient::SocketAccept(DWORD ip,int port)
 
 		if (file_size>0)
 		{
-			/*GetDlgItem(IDC_SHOWINFO)->SetWindowText(_T(""));
-			GetDlgItem(IDC_SHOWINFO)->SetWindowText(_T("文件下载到本地 d：\\test.zip \r\n"));*/
-
+			
 			DWORD dwNumberOfBytesRecv = 0;
 			DWORD dwCountOfBytesRecv = 0;
 
@@ -120,7 +106,6 @@ void QtClient::SocketAccept(DWORD ip,int port)
 					endFlag = false;
 					break;
 				}
-				//m_progress->SetPos(dwCountOfBytesRecv);//更新进度条
 
 				dwNumberOfBytesRecv = ::recv(sockClient, Buffer, sizeof(Buffer), 0);
 				file.write(Buffer, dwNumberOfBytesRecv);
@@ -130,16 +115,12 @@ void QtClient::SocketAccept(DWORD ip,int port)
 
 
 			
-			//GetDlgItem(IDC_SHOWINFO)->SetWindowText(_T(""));
-			//GetDlgItem(IDC_SHOWINFO)->SetWindowText(_T("文件接收完毕！\r\n"));
-			//AfxMessageBox(_T("文件接收完毕!"));//醒目可以注释
 			emit EmitMsg("file received");
 			
 		}
 		else
 		{
 			emit EmitMsg("get file size failed");
-			//AfxMessageBox(_T("获取文件总大小失败！"));
 		}
 		file.close();
 
@@ -147,7 +128,6 @@ void QtClient::SocketAccept(DWORD ip,int port)
 	else
 	{
 		emit EmitMsg("connect server failed");
-		//AfxMessageBox(_T("连接服务器失败、请确认IP地址或端口号！"));
 	}
 
 
@@ -162,6 +142,7 @@ void QtClient::BeginSocket()
 DWORD QtClient::ReceiveThread(LPVOID lpParam)
 {
 	QtClient* param = (QtClient*)lpParam;
+	param->InitSocket();
 	param->SocketAccept(param->ip, param->port);
 	return 0;
 }
