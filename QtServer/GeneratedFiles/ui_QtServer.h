@@ -96,7 +96,7 @@ public:
         label_3->setText(QApplication::translate("QtServerClass", "bytes", nullptr));
         label_4->setText(QApplication::translate("QtServerClass", "local IP:", nullptr));
         ListenBtn->setText(QApplication::translate("QtServerClass", "StratListen", nullptr));
-        SendBtn->setText(QApplication::translate("QtServerClass", "Send", nullptr));
+        SendBtn->setText(QApplication::translate("QtServerClass", "End Listen", nullptr));
         ConnectTxt->setText(QApplication::translate("QtServerClass", "not start", nullptr));
     } // retranslateUi
 

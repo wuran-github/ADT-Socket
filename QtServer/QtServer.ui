@@ -132,7 +132,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Send</string>
+     <string>End Listen</string>
     </property>
    </widget>
    <widget class="QLabel" name="ConnectTxt">

@@ -29,6 +29,11 @@ void QtClient::Init()
 	res = QObject::connect(this, SIGNAL(EmitMsg(QString)), this, SLOT(ShowMsg(QString)));
 
 	endFlag = false;
+
+	QDir dir;
+	auto path=QDir::currentPath();
+	path += "/";
+	ui.FileText->setText(path);
 }
 
 int QtClient::InitSocket()
