@@ -3,6 +3,8 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_QtServer.h"
 #include <Windows.h>
+#include <vector>
+#include <QNetworkInterface>
 class QtServer : public QMainWindow
 {
 	Q_OBJECT
@@ -12,6 +14,7 @@ public:
 	void Init();
 	int InitSocket();
 	void SocketAccept();
+	void GetIps();
 	void SendFile(SOCKET* client);
 	static DWORD WINAPI AcceptThread(LPVOID lpParam);
 	static DWORD WINAPI SendThread(LPVOID lpParam);
@@ -34,5 +37,6 @@ private:
 	bool closeFlag;
 	//client num
 	int threadNum;
+	std::vector<QString> ips;
 	
 };

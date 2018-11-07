@@ -58,15 +58,16 @@ int QtClient::InitSocket()
 	return 1;
 }
 
-void QtClient::SocketAccept(DWORD ip,int port)
+void QtClient::SocketAccept(QString ipstr,int port)
 {
 
 	unsigned long long file_size = 0;
-
+	auto temp = ipstr.toLatin1();
+	char* ip= temp.data();
 
 	SOCKET sockClient = socket(AF_INET, SOCK_STREAM, 0);
 	SOCKADDR_IN addrSrv;
-	addrSrv.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+	addrSrv.sin_addr.S_un.S_addr = inet_addr(ip);
 	addrSrv.sin_port = htons(port);
 	addrSrv.sin_family = AF_INET;
 	//::connect(sockClient,(SOCKADDR*)&addrSrv,sizeof(SOCKADDR));
@@ -148,7 +149,7 @@ DWORD QtClient::ReceiveThread(LPVOID lpParam)
 {
 	QtClient* param = (QtClient*)lpParam;
 	param->InitSocket();
-	param->SocketAccept(param->ip, param->port);
+	param->SocketAccept(param->ipstr, param->port);
 	return 0;
 }
 
@@ -167,10 +168,10 @@ void QtClient::UpdateBytes(int num)
 
 void QtClient::BuildClick()
 {
-	 auto ipchar= ui.ServerIPTxt->text().toLatin1().data();
+	auto temp = ui.ServerIPTxt->text().toLatin1();
+	 auto ipchar= temp.data();
 	 int port = ui.PortEdit->text().toInt();
-	 DWORD ip = inet_addr(ipchar);
-	 this->ip = ip;
+	 this->ipstr = ipchar;
 	 this->port = port;
 	 HANDLE hThread = CreateThread(NULL, 0, QtClient::ReceiveThread, this, 0, NULL);
 }

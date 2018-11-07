@@ -32,7 +32,14 @@ void QtServer::Init()
 	//stop
 	res = QObject::connect(ui.SendBtn, SIGNAL(clicked()), this, SLOT(CloseSocket()));
 	closeFlag = false;
+
+	//getIP
+	GetIps();
+	if (ips.size() > 0) {
+		ui.IPTxt->setText(ips[0]);
+	}
 }
+
 
 void QtServer::BeginSocket() {
 	InitSocket();
@@ -130,6 +137,18 @@ void QtServer::SocketAccept()
 	}
 
 	
+}
+
+void QtServer::GetIps()
+{
+	for each (QHostAddress address in QNetworkInterface().allAddresses())
+	{
+		if (address.protocol() == QAbstractSocket::IPv4Protocol)
+		{
+			QString ip = address.toString();
+			ips.push_back(ip);
+		}
+	}
 }
 
 void QtServer::SendFile(SOCKET* client) {

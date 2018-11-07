@@ -15,7 +15,7 @@ public:
 	QtClient(QWidget *parent = Q_NULLPTR);
 	void Init();
 	int InitSocket();
-	void SocketAccept(DWORD ip, int port);
+	void SocketAccept(QString ipstr, int port);
 	static DWORD WINAPI ReceiveThread(LPVOID lpParam);
 signals:
 	void EmitBytes(int num);
@@ -28,7 +28,7 @@ public slots:
 	void UpdateBytes(int num);
 	void BeginSocket();
 private:
-	DWORD ip;
+	QString ipstr;
 	int port;
 	bool endFlag;
 	Ui::QtClientClass ui;
